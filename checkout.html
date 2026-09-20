@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — NEXUS Store</title>
+  <meta name="description" content="Complete your NEXUS Store order with our secure, fast checkout." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .card-input-row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; }
+    .payment-method-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: .88rem;
+    }
+    .payment-method-btn.selected {
+      border-color: var(--purple-mid);
+      background: rgba(108,63,199,0.12);
+      color: var(--text-primary);
+    }
+    .payment-method-btn i { font-size: 1.3rem; color: var(--text-muted); }
+    .payment-method-btn.selected i { color: var(--purple-light); }
+    .review-order-img {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+    .conf-icon {
+      width: 80px; height: 80px;
+      background: rgba(34,211,165,0.15);
+      border: 2px solid var(--success);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: var(--success);
+      margin: 0 auto 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ── Navbar ── -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">⚡</div>
+      NEXUS<span>Store</span>
+    </a>
+    <div class="nav-actions">
+      <a href="cart.html" class="nav-btn" title="Cart" id="nav-cart-btn" aria-label="Shopping cart">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Page Header ── -->
+<header class="page-header">
+  <div class="container">
+    <h1><i class="fa-solid fa-lock" style="color:var(--purple-light);margin-right:10px;"></i>Secure Checkout</h1>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <a href="cart.html">Cart</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Checkout</span>
+    </div>
+  </div>
+</header>
+
+<main style="padding:32px 0 80px;">
+  <div class="container">
+
+    <!-- ── Steps ── -->
+    <div class="checkout-steps reveal" role="tablist" aria-label="Checkout steps">
+      <div class="step active" role="tab" aria-selected="true">
+        <div class="step-num">1</div>
+        <div class="step-label">Shipping</div>
+      </div>
+      <div class="step" role="tab" aria-selected="false">
+        <div class="step-num">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step" role="tab" aria-selected="false">
+        <div class="step-num">3</div>
+        <div class="step-label">Review</div>
+      </div>
+    </div>
+
+    <div class="checkout-layout">
+
+      <!-- Left: Panels -->
+      <div>
+
+        <!-- ── Panel 1: Shipping ── -->
+        <div class="checkout-panel animate-fadeInUp" id="panel-shipping">
+          <h3><i class="fa-solid fa-truck" style="color:var(--purple-light);margin-right:8px;"></i>Shipping Information</h3>
+          <form id="shipping-form" onsubmit="return false;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="first-name">First Name *</label>
+                <input type="text" id="first-name" class="form-control" placeholder="John" autocomplete="given-name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="last-name">Last Name *</label>
+                <input type="text" id="last-name" class="form-control" placeholder="Doe" autocomplete="family-name" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <input type="email" id="email" class="form-control" placeholder="john@example.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="phone">Phone Number</label>
+              <input type="tel" id="phone" class="form-control" placeholder="+1 (555) 000-0000" autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="address">Street Address *</label>
+              <input type="text" id="address" class="form-control" placeholder="123 Main Street" autocomplete="street-address" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="city">City *</label>
+                <input type="text" id="city" class="form-control" placeholder="New York" autocomplete="address-level2" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="zip">ZIP Code *</label>
+                <input type="text" id="zip" class="form-control" placeholder="10001" autocomplete="postal-code" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="country">Country</label>
+              <select id="country" class="form-control" autocomplete="country">
+                <option value="US">United States</option>
+                <option value="GB">United Kingdom</option>
+                <option value="CA">Canada</option>
+                <option value="AU">Australia</option>
+                <option value="IN">India</option>
+                <option value="DE">Germany</option>
+                <option value="FR">France</option>
+              </select>
+            </div>
+
+            <!-- Shipping Method -->
+            <h4 style="font-size:.9rem;margin:20px 0 12px;color:var(--text-secondary);">Shipping Method</h4>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(108,63,199,0.1);border:2px solid var(--purple-mid);border-radius:10px;cursor:pointer;">
+                <input type="radio" name="shipping" value="standard" checked style="accent-color:var(--purple-mid);" />
+                <div>
+                  <div style="font-weight:600;font-size:.88rem;">Standard Delivery</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);">5–7 business days</div>
+                </div>
+                <span style="margin-left:auto;font-weight:700;color:var(--success);">FREE</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
+                <input type="radio" name="shipping" value="express" style="accent-color:var(--purple-mid);" />
+                <div>
+                  <div style="font-weight:600;font-size:.88rem;">Express Delivery</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);">2–3 business days</div>
+                </div>
+                <span style="margin-left:auto;font-weight:700;">$12.99</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
+                <input type="radio" name="shipping" value="overnight" style="accent-color:var(--purple-mid);" />
+                <div>
+                  <div style="font-weight:600;font-size:.88rem;">Overnight Delivery</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);">Next business day</div>
+                </div>
+                <span style="margin-left:auto;font-weight:700;">$24.99</span>
+              </label>
+            </div>
+
+            <button class="btn btn-primary w-full mt-24" onclick="nextStep(1)" style="justify-content:center;padding:14px;">
+              Continue to Payment <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- ── Panel 2: Payment ── -->
+        <div class="checkout-panel" id="panel-payment" style="display:none;">
+          <h3><i class="fa-solid fa-credit-card" style="color:var(--purple-light);margin-right:8px;"></i>Payment Method</h3>
+
+          <button class="payment-method-btn selected" id="pay-card-btn" onclick="selectPayment('card')">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Credit / Debit Card</span>
+            <div style="margin-left:auto;display:flex;gap:6px;opacity:.7;">
+              <i class="fa-brands fa-cc-visa" style="font-size:1.2rem;"></i>
+              <i class="fa-brands fa-cc-mastercard" style="font-size:1.2rem;"></i>
+            </div>
+          </button>
+          <button class="payment-method-btn" id="pay-paypal-btn" onclick="selectPayment('paypal')">
+            <i class="fa-brands fa-paypal" style="color:#003087;"></i>
+            <span>PayPal</span>
+          </button>
+          <button class="payment-method-btn" id="pay-apple-btn" onclick="selectPayment('apple')">
+            <i class="fa-brands fa-apple" style="color:var(--text-primary);"></i>
+            <span>Apple Pay</span>
+          </button>
+
+          <!-- Card Fields -->
+          <div id="card-fields" style="margin-top:24px;">
+            <div class="form-group">
+              <label class="form-label" for="card-name">Cardholder Name</label>
+              <input type="text" id="card-name" class="form-control" placeholder="John Doe" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="card-number">Card Number</label>
+              <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19"
+                oninput="formatCard(this)" />
+            </div>
+            <div class="card-input-row">
+              <div class="form-group">
+                <label class="form-label" for="card-expiry">Expiry</label>
+                <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" maxlength="5" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-cvv">CVV</label>
+                <input type="text" id="card-cvv" class="form-control" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-muted);margin-bottom:20px;">
+              <i class="fa-solid fa-lock text-success"></i>
+              Your payment details are encrypted and secure.
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;">
+            <button class="btn btn-ghost" onclick="nextStep(0)" style="flex:none;">
+              <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-primary w-full" onclick="nextStep(2)" style="justify-content:center;padding:14px;">
+              Review Order <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Panel 3: Review ── -->
+        <div class="checkout-panel" id="panel-review" style="display:none;">
+          <h3><i class="fa-solid fa-clipboard-check" style="color:var(--purple-light);margin-right:8px;"></i>Review Your Order</h3>
+
+          <div id="review-items" style="margin-bottom:20px;"></div>
+
+          <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;">
+            <div class="summary-row">
+              <span>Subtotal</span><span id="checkout-subtotal">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping</span><span id="checkout-shipping">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Tax</span><span id="checkout-tax">$0.00</span>
+            </div>
+            <div class="summary-row total">
+              <span>Order Total</span><span id="checkout-total" class="price">$0.00</span>
+            </div>
+          </div>
+
+          <div style="background:rgba(34,211,165,0.08);border:1px solid rgba(34,211,165,0.25);border-radius:10px;padding:14px;margin-bottom:24px;font-size:.82rem;color:var(--text-secondary);">
+            <i class="fa-solid fa-circle-info" style="color:var(--success);margin-right:6px;"></i>
+            By placing your order you agree to NEXUS Store's <a href="#" style="color:var(--purple-light);">Terms of Service</a> and <a href="#" style="color:var(--purple-light);">Privacy Policy</a>.
+          </div>
+
+          <div style="display:flex;gap:12px;">
+            <button class="btn btn-ghost" onclick="nextStep(1)">
+              <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-gold w-full btn-lg" onclick="placeOrder()" style="justify-content:center;" id="place-order-btn">
+              <i class="fa-solid fa-check-circle"></i> Place Order
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Mini Summary -->
+      <div>
+        <div class="order-summary" style="position:sticky;top:calc(var(--nav-height) + 20px);">
+          <h3 style="font-size:1rem;margin-bottom:16px;">Your Order</h3>
+          <div id="sidebar-items" style="margin-bottom:16px;display:flex;flex-direction:column;gap:10px;"></div>
+          <div class="summary-row">
+            <span>Total</span>
+            <span class="price" id="sidebar-total" style="font-size:1.1rem;font-weight:800;color:var(--gold);">$0.00</span>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:rgba(34,211,165,0.08);border:1px solid rgba(34,211,165,0.2);border-radius:8px;font-size:.78rem;color:var(--text-secondary);">
+            <i class="fa-solid fa-shield-halved" style="color:var(--success);margin-right:6px;"></i>
+            SSL encrypted & 100% secure checkout
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/pricing.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // Populate sidebar
+  document.addEventListener('DOMContentLoaded', () => {
+    const items = Cart.getItems();
+    const sidebar = document.getElementById('sidebar-items');
+    const sidebarTotal = document.getElementById('sidebar-total');
+    if (sidebar) {
+      sidebar.innerHTML = items.map(i => `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="${i.image}" alt="${i.name}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);" />
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.name}</div>
+            <div style="font-size:.75rem;color:var(--text-muted);">Qty: ${i.qty}</div>
+          </div>
+          <div style="font-size:.88rem;font-weight:700;white-space:nowrap;">${formatPrice(i.price * i.qty)}</div>
+        </div>
+      `).join('');
+    }
+    if (sidebarTotal) {
+      const pricing = PricingEngine.calculate(items, '');
+      sidebarTotal.textContent = formatPrice(pricing.total);
+    }
+  });
+
+  function selectPayment(type) {
+    ['card', 'paypal', 'apple'].forEach(t => {
+      const btn = document.getElementById(`pay-${t}-btn`);
+      if (btn) btn.classList.toggle('selected', t === type);
+    });
+    const cardFields = document.getElementById('card-fields');
+    if (cardFields) cardFields.style.display = type === 'card' ? 'block' : 'none';
+  }
+
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value = v.replace(/(.{4})/g, '$1 ').trim();
+  }
+</script>
+</body>
+</html>

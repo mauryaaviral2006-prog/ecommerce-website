@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart — NEXUS Store</title>
+  <meta name="description" content="Review your shopping cart items, apply discount codes, and proceed to checkout." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .shipping-progress-wrap {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .shipping-progress-bar-track {
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    #shipping-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple-mid), var(--gold));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    #shipping-progress-msg { font-size: .8rem; color: var(--text-secondary); }
+    .cart-items-list { display: flex; flex-direction: column; gap: 12px; }
+    .secure-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .78rem; color: var(--text-muted);
+      margin-top: 12px; justify-content: center;
+    }
+    .secure-badge i { color: var(--success); }
+  </style>
+</head>
+<body>
+
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ── Navbar ── -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">⚡</div>
+      NEXUS<span>Store</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="products.html?cat=Electronics">Electronics</a></li>
+      <li><a href="cart.html" class="active">Cart</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="cart.html" class="nav-btn active" title="Cart" aria-label="Shopping cart" id="nav-cart-btn">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="products.html">All Products</a>
+  <a href="cart.html" class="active">Shopping Cart</a>
+</div>
+
+<!-- ── Page Header ── -->
+<header class="page-header">
+  <div class="container">
+    <h1><i class="fa-solid fa-cart-shopping" style="color:var(--purple-light);margin-right:10px;"></i>Shopping Cart</h1>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Cart</span>
+    </div>
+  </div>
+</header>
+
+<main style="padding:32px 0 80px;">
+  <div class="container">
+
+    <!-- Empty State -->
+    <div id="cart-empty" style="display:none;">
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+        <h3>Your Cart is Empty</h3>
+        <p>Looks like you haven't added anything yet. Start shopping to fill it up!</p>
+        <a href="products.html" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-bag-shopping"></i> Browse Products
+        </a>
+      </div>
+    </div>
+
+    <!-- Filled Cart -->
+    <div id="cart-filled" class="cart-layout" style="display:none;">
+
+      <!-- Left: Items -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 style="font-size:1.1rem;">Cart Items</h2>
+          <button onclick="clearCart()" style="background:none;border:none;color:var(--danger);font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-trash-can"></i> Clear All
+          </button>
+        </div>
+        <div class="cart-items-list" id="cart-items"></div>
+
+        <!-- Continue Shopping -->
+        <div style="margin-top:24px;">
+          <a href="products.html" class="btn btn-ghost">
+            <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div>
+        <div class="order-summary">
+          <h3><i class="fa-solid fa-receipt" style="color:var(--purple-light);margin-right:8px;"></i>Order Summary</h3>
+
+          <!-- Shipping Progress -->
+          <div class="shipping-progress-wrap">
+            <div id="shipping-progress-msg">Loading…</div>
+            <div class="shipping-progress-bar-track">
+              <div id="shipping-progress-bar"></div>
+            </div>
+          </div>
+
+          <!-- Summary Rows -->
+          <div style="margin-top:20px;">
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span id="summary-subtotal">$0.00</span>
+            </div>
+            <div class="summary-row" id="coupon-row" style="display:none;">
+              <span>
+                Discount
+                <small id="coupon-label" style="color:var(--gold);display:block;font-size:.72rem;"></small>
+              </span>
+              <span id="summary-coupon" style="color:var(--success);">-$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping</span>
+              <span id="summary-shipping">$9.99</span>
+            </div>
+            <div class="summary-row">
+              <span>Tax (8.5%)</span>
+              <span id="summary-tax">$0.00</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total</span>
+              <span class="price" id="summary-total">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Coupon -->
+          <div class="coupon-wrap">
+            <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px;">
+              <i class="fa-solid fa-tag" style="color:var(--gold);margin-right:4px;"></i>
+              Have a coupon? Try: <code style="color:var(--purple-light);">NEXUS20</code>, <code style="color:var(--purple-light);">SAVE50</code>
+            </p>
+            <div class="coupon-input-row">
+              <input type="text" id="coupon-input" placeholder="Enter coupon code" aria-label="Coupon code" />
+              <button class="btn btn-outline btn-sm" id="apply-coupon-btn">Apply</button>
+            </div>
+          </div>
+
+          <!-- Checkout Button -->
+          <a href="checkout.html" class="btn btn-primary w-full" style="justify-content:center;font-size:1rem;padding:14px;" id="checkout-btn">
+            <i class="fa-solid fa-lock"></i> Secure Checkout
+          </a>
+          <div class="secure-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            SSL Encrypted & Secure Payment
+          </div>
+
+          <!-- Payment Icons -->
+          <div style="display:flex;justify-content:center;gap:10px;margin-top:16px;opacity:.6;">
+            <i class="fa-brands fa-cc-visa" style="font-size:1.6rem;color:var(--text-secondary);"></i>
+            <i class="fa-brands fa-cc-mastercard" style="font-size:1.6rem;color:var(--text-secondary);"></i>
+            <i class="fa-brands fa-cc-paypal" style="font-size:1.6rem;color:var(--text-secondary);"></i>
+            <i class="fa-brands fa-cc-apple-pay" style="font-size:1.6rem;color:var(--text-secondary);"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <p>© 2026 NEXUS Store. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/pricing.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function clearCart() {
+    if (confirm('Remove all items from cart?')) {
+      Cart.clear();
+      showToast('info', 'Cart Cleared', 'All items have been removed.');
+      initCartPage();
+    }
+  }
+  // Show filled/empty on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const items = Cart.getItems();
+    if (items.length === 0) {
+      document.getElementById('cart-empty').style.display = 'block';
+      document.getElementById('cart-filled').style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
