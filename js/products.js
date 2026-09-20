@@ -263,10 +263,13 @@ function generateStars(rating) {
 }
 
 /**
- * Format price
+ * Format price in Indian Rupees (₹)
  */
 function formatPrice(price) {
-  return '$' + price.toFixed(2);
+  return '₹' + Number(price).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 /**

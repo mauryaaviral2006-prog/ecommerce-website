@@ -173,7 +173,7 @@
                   <div style="font-weight:600;font-size:.88rem;">Express Delivery</div>
                   <div style="font-size:.75rem;color:var(--text-muted);">2–3 business days</div>
                 </div>
-                <span style="margin-left:auto;font-weight:700;">$12.99</span>
+                <span style="margin-left:auto;font-weight:700;">₹99.00</span>
               </label>
               <label style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
                 <input type="radio" name="shipping" value="overnight" style="accent-color:var(--purple-mid);" />
@@ -181,7 +181,7 @@
                   <div style="font-weight:600;font-size:.88rem;">Overnight Delivery</div>
                   <div style="font-size:.75rem;color:var(--text-muted);">Next business day</div>
                 </div>
-                <span style="margin-left:auto;font-weight:700;">$24.99</span>
+                <span style="margin-left:auto;font-weight:700;">₹199.00</span>
               </label>
             </div>
 
@@ -203,13 +203,17 @@
               <i class="fa-brands fa-cc-mastercard" style="font-size:1.2rem;"></i>
             </div>
           </button>
+          <button class="payment-method-btn" id="pay-upi-btn" onclick="selectPayment('upi')">
+            <i class="fa-solid fa-mobile-screen-button" style="color:var(--gold);"></i>
+            <span>UPI / QR Code (GPay, PhonePe, Paytm)</span>
+          </button>
+          <button class="payment-method-btn" id="pay-cod-btn" onclick="selectPayment('cod')">
+            <i class="fa-solid fa-money-bill-wave" style="color:var(--success);"></i>
+            <span>Cash on Delivery (COD)</span>
+          </button>
           <button class="payment-method-btn" id="pay-paypal-btn" onclick="selectPayment('paypal')">
             <i class="fa-brands fa-paypal" style="color:#003087;"></i>
-            <span>PayPal</span>
-          </button>
-          <button class="payment-method-btn" id="pay-apple-btn" onclick="selectPayment('apple')">
-            <i class="fa-brands fa-apple" style="color:var(--text-primary);"></i>
-            <span>Apple Pay</span>
+            <span>PayPal / Net Banking</span>
           </button>
 
           <!-- Card Fields -->
@@ -257,16 +261,16 @@
 
           <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;">
             <div class="summary-row">
-              <span>Subtotal</span><span id="checkout-subtotal">$0.00</span>
+              <span>Subtotal</span><span id="checkout-subtotal">₹0.00</span>
             </div>
             <div class="summary-row">
-              <span>Shipping</span><span id="checkout-shipping">$0.00</span>
+              <span>Shipping</span><span id="checkout-shipping">₹0.00</span>
             </div>
             <div class="summary-row">
-              <span>Tax</span><span id="checkout-tax">$0.00</span>
+              <span>GST (18%)</span><span id="checkout-tax">₹0.00</span>
             </div>
             <div class="summary-row total">
-              <span>Order Total</span><span id="checkout-total" class="price">$0.00</span>
+              <span>Order Total</span><span id="checkout-total" class="price">₹0.00</span>
             </div>
           </div>
 
@@ -294,7 +298,7 @@
           <div id="sidebar-items" style="margin-bottom:16px;display:flex;flex-direction:column;gap:10px;"></div>
           <div class="summary-row">
             <span>Total</span>
-            <span class="price" id="sidebar-total" style="font-size:1.1rem;font-weight:800;color:var(--gold);">$0.00</span>
+            <span class="price" id="sidebar-total" style="font-size:1.1rem;font-weight:800;color:var(--gold);">₹0.00</span>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(34,211,165,0.08);border:1px solid rgba(34,211,165,0.2);border-radius:8px;font-size:.78rem;color:var(--text-secondary);">
             <i class="fa-solid fa-shield-halved" style="color:var(--success);margin-right:6px;"></i>
@@ -336,7 +340,7 @@
   });
 
   function selectPayment(type) {
-    ['card', 'paypal', 'apple'].forEach(t => {
+    ['card', 'upi', 'cod', 'paypal'].forEach(t => {
       const btn = document.getElementById(`pay-${t}-btn`);
       if (btn) btn.classList.toggle('selected', t === type);
     });

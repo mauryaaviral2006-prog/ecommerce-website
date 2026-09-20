@@ -50,14 +50,14 @@
 
 const PricingEngine = (() => {
   // ── Constants ──
-  const TAX_RATE = 8.5;              // %
-  const FREE_SHIPPING_THRESHOLD = 150; // $
-  const BASE_SHIPPING = 9.99;
+  const TAX_RATE = 18;               // 18% GST standard in India
+  const FREE_SHIPPING_THRESHOLD = 499; // ₹
+  const BASE_SHIPPING = 49;          // ₹
 
   const COUPONS = {
     'NEXUS10':  { type: 'percent',  value: 10,  label: '10% off' },
     'NEXUS20':  { type: 'percent',  value: 20,  label: '20% off' },
-    'SAVE50':   { type: 'fixed',    value: 50,  label: '$50 off' },
+    'SAVE50':   { type: 'fixed',    value: 50,  label: '₹50 off' },
     'FREESHIP': { type: 'shipping', value: 100, label: 'Free Shipping' },
     'WELCOME':  { type: 'percent',  value: 15,  label: '15% off' },
   };
